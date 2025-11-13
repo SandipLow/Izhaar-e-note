@@ -3,50 +3,50 @@ import express, { Request, Response } from "express";
 import { decrypt, encrypt, EncryptedData, generateKey } from "../lib/encryption";
 import { createNote, getNoteById } from "../repositories/notes";
 import upload from "../middlewares/multer";
+import { compress, compressImageToFit, decompress } from "../lib/compression";
 
 const router = express.Router();
 
 // POST /api/notes → Create a new note
-router.post("/", upload.single("photo"), (req: Request, res: Response) => {
+router.post("/", upload.single("photo"), async (req: Request, res: Response) => {
     try {
         const notes = req.body.notes ? JSON.parse(req.body.notes) : [];
-    
-        // Combine text + photo into one object
+
+        // Build payload
         const payload: any = { notes };
+
         if (req.file) {
-          payload.photo = {
-            filename: req.file.originalname,
-            mimetype: req.file.mimetype,
-            data: req.file.buffer.toString("base64"),
-          };
+            const compressedBuffer = await compressImageToFit(req.file.buffer);
+            payload.photo = {
+                filename: req.file.originalname,
+                mimetype: "image/jpeg",
+                data: compressedBuffer.toString("base64"),
+            };
         }
-    
-        const jsonData = JSON.stringify(payload);
+
+        const compressedJson = compress(JSON.stringify(payload));
         const key = generateKey();
-        const { encryptedData, iv, authTag } = encrypt(jsonData, key);
-    
-    
+        const { encryptedData, iv, authTag } = encrypt(compressedJson, key);
+
         const note: NoteData = {
-            id: uuid(),
+            id: crypto.randomUUID(),
             encryptedData,
             iv,
             authTag,
-            mimetype: req.file?.mimetype,
-            filename: req.file?.originalname,
+            mimetype: payload.photo?.mimetype,
+            filename: payload.photo?.filename,
         };
-    
-        createNote(note);
-    
-        // Return note ID and key (encoded as base64) for decryption
+
+        await createNote(note);
+
         res.json({
             id: note.id,
             key: key.toString("base64"),
-            message: "Note created successfully!"
+            message: "Note created successfully!",
         });
-        
-    } catch (error) {
+    } catch (error: any) {
+        console.error("Error creating note:", error);
         res.status(500).json({ error: "Internal server error" });
-        return;
     }
 });
 
@@ -68,10 +68,11 @@ router.get("/:id", async (req: Request, res: Response) => {
         }
 
         const decrypted = decrypt(note.encryptedData, Buffer.from(keyBase64, "base64"), note.iv, note.authTag);
-        const data = JSON.parse(decrypted);
-    
+        const decompressed = decompress(decrypted);
+        const data = JSON.parse(decompressed);
+
         res.render("note", { data });
-        
+
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
         return;
@@ -79,3 +80,4 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 export default router;
+

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ---------- ELEMENTS ---------- */
     const getStarted = document.getElementById("get-started");
     const createBtn = document.getElementById("create-note-btn");
+    const openDemoBtn = document.getElementById("open-demo-btn");
     const container = document.querySelector(".note-input-container");
     const addNoteBtn = document.getElementById("add-note-btn");
     const addPhotoBtn = document.getElementById("add-photo-btn");
@@ -15,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
         getStarted.style.display = "block";
         createBtn.style.display = "none";
         getStarted.scrollIntoView({ behavior: "smooth" });
+    });
+
+    /* ---------- OPEN DEMO ---------- */
+    openDemoBtn?.addEventListener("click", () => {
+        window.open("/notes/49813a40-f01b-46c6-9ba4-86c4a986a8df?key=INdqEjfLn7iHdB6gIHFwK%2Fw2TXPfDwr3rvt511H5DJk%3D", "_blank");
     });
 
     /* ---------- CREATE TEXT NOTE ---------- */
@@ -85,8 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Validate: size < 0.5 MB
-            if (file.size > 0.5 * 1024 * 1024) {
+            // Validate: size < 10 MB
+            if (file.size > 10 * 1024 * 1024) {
                 alert("File size exceeds 0.5 MB limit.");
                 return;
             }
@@ -102,10 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Insert photo UI
             photoContainer.innerHTML = `
-            <span class="drag-handle" title="Photo (fixed)">Drag</span>
-            ${img.outerHTML}
-            <button type="button" class="delete-note-btn" title="Delete photo">×</button>
-        `;
+                ${img.outerHTML}
+                <button type="button" class="delete-note-btn" title="Delete photo">×</button>
+            `;
 
             // Disable upload button
             addPhotoBtn.disabled = true;
@@ -162,67 +167,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ---------- SUBMIT ---------- */
     submitBtn.addEventListener("click", async () => {
-        const textItems = container.querySelectorAll(".note-item");
-        const notes = [];
+    const textItems = container.querySelectorAll(".note-item");
+    const notes = [];
 
-        textItems.forEach((itm) => {
-            const val = itm.querySelector(".note-text-input")?.value.trim();
-            if (val) notes.push(val);
-        });
-
-        if (notes.length === 0 && !uploadedFile) {
-            alert("Add at least one note or a photo.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("notes", JSON.stringify(notes));
-        if (uploadedFile) formData.append("photo", uploadedFile, uploadedFile.name);
-
-        try {
-            const res = await fetch("/notes", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!res.ok) throw new Error(`Server error ${res.status}`);
-
-            const data = await res.json(); // { id, key, message }
-
-            // ---- BUILD SHARE LINK ----
-            const shareUrl = `${BASE_URL.replace(/\/+$/, "")}/notes/${data.id
-                }?key=${encodeURIComponent(data.key)}`;
-
-            // ---- SHOW RESULT UI ----
-            const resultDiv = document.getElementById("result-container");
-            const linkInput = document.getElementById("share-link");
-            const copyBtn = document.getElementById("copy-link-btn");
-
-            linkInput.value = shareUrl;
-            resultDiv.style.display = "block";
-
-            // ---- COPY TO CLIPBOARD ----
-            copyBtn.onclick = async () => {
-                try {
-                    await navigator.clipboard.writeText(shareUrl);
-                    copyBtn.textContent = "Copied!";
-                    setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
-                } catch (err) {
-                    // fallback for older browsers
-                    linkInput.select();
-                    document.execCommand("copy");
-                    copyBtn.textContent = "Copied!";
-                    setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
-                }
-            };
-
-            // ---- OPTIONAL: hide create form after success ----
-            //   getStarted.style.display = "none";
-        } catch (err) {
-            console.error(err);
-            alert(err.message || "Failed to create note. Check console.");
-        }
+    textItems.forEach((itm) => {
+        const val = itm.querySelector(".note-text-input")?.value.trim();
+        if (val) notes.push(val);
     });
+
+    if (notes.length === 0 && !uploadedFile) {
+        alert("Add at least one note or a photo.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("notes", JSON.stringify(notes));
+    if (uploadedFile) formData.append("photo", uploadedFile, uploadedFile.name);
+
+    // Disable button + visual feedback
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "<i class='fa fa-spinner fa-spin'></i> Submitting...";
+
+    try {
+        const res = await fetch("/notes", { method: "POST", body: formData });
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+        const data = await res.json();
+        const shareUrl = `${BASE_URL.replace(/\/+$/, "")}/notes/${data.id}?key=${encodeURIComponent(data.key)}`;
+
+        const resultDiv = document.getElementById("result-container");
+        const linkInput = document.getElementById("share-link");
+        const copyBtn = document.getElementById("copy-link-btn");
+        const openBtn = document.getElementById("open-link-btn");
+
+        linkInput.value = shareUrl;
+        resultDiv.style.display = "block";
+
+        copyBtn.onclick = async () => {
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+            } catch {
+                linkInput.select();
+                document.execCommand("copy");
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+            }
+        };
+        openBtn.onclick = () => {
+            window.open(shareUrl, "_blank");
+        };
+    } catch (err) {
+        console.error(err);
+        alert(err.message || "Failed to create note. Check console.");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Note";
+    }
+    });
+
 
     /* ---------- INITIAL SETUP ---------- */
     addNoteBtn.addEventListener("click", createTextNote);

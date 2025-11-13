@@ -227,6 +227,24 @@ section h2 {
   box-shadow: 0 4px 12px rgba(255,215,0,.4);
 }
 
+#open-demo-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: #ffd700;
+  color: #6414e9;
+  transition: all .3s;
+}
+#open-demo-btn:hover {
+  background: #ffea00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,215,0,.4);
+}
+
 /* ======================================== RESPONSIVE ======================================== */
 @media (max-width: 768px) {
   #get-started { padding: 20px; width: 95%; }
