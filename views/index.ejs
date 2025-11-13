@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="/styles/index.css">
+
+<header>
+    <h1>Note-E-Izhaar 💌</h1>
+    <p class="tagline">Send heartfelt notes to your loved ones, safely and securely.</p>
+</header>
+
+<section class="description">
+    <h2>About the App</h2>
+    <p>Note-E-Izhaar lets you create personalized notes with messages and photos for someone special. Each note is
+        delivered through a unique link containing a secure key encoded in the URL. Only anyone with that URL can view
+        the note.</p>
+    <button id="create-note-btn">Create Now</button>
+</section>
+
+<section class="encryption-note">
+    <h2>Security & Privacy</h2>
+    <p>All messages and photos are encrypted end-to-end before being stored in our database. The encryption key is
+        encoded in the URL itself. This means that while your data remains encrypted on our servers, anyone with the URL
+        can decrypt and view it. We never access your messages or photos directly.</p>
+    <p><strong>Note:</strong> Your notes remain stored indefinitely, so your loved ones can revisit them anytime.</p>
+</section>
+
+<section class="faqs">
+    <h2>FAQs</h2>
+    <div class="faq">
+        <i class="fa-solid fa-lock"></i>
+        <p><strong>Who can read my note?</strong> Anyone with the unique URL containing the encoded key can view the
+            note. Make sure to share it only with the intended recipient.</p>
+    </div>
+    <div class="faq">
+        <i class="fa-solid fa-database"></i>
+        <p><strong>Is my note stored permanently?</strong> Yes! Notes remain in our database forever, but they are
+            encrypted.</p>
+    </div>
+    <div class="faq">
+        <i class="fa-solid fa-eye-slash"></i>
+        <p><strong>Can anyone else see my note?</strong> No, the server stores only encrypted data. Only someone with
+            the URL can decrypt and view the content.</p>
+    </div>
+    <div class="faq">
+        <i class="fa-solid fa-shield"></i>
+        <p><strong>How secure is this?</strong> The note is encrypted using AES-GCM. As long as the URL is private, your
+            message is secure from anyone else.</p>
+    </div>
+</section>
+
+<section id="get-started" style="display:none;">
+    <h2>Create Your Note</h2>
+
+    <div class="note-input-container">
+        <!-- Text notes will be inserted here -->
+        <div class="note-item" draggable="true" data-type="text">
+            <span class="drag-handle" title="Drag to reorder">
+                <i class="fa-solid fa-grip-lines"></i>
+            </span>
+            <input type="text" class="note-text-input" placeholder="Type your message here..." />
+            <button type="button" class="delete-note-btn" title="Delete note">×</button>
+        </div>
+
+        <!-- Photo is always at the bottom -->
+        <div id="photo-container"></div>
+
+        <div class="buttons-row">
+            <button type="button" id="add-note-btn">Add Note</button>
+            <button type="button" id="add-photo-btn">Upload Photo</button>
+        </div>
+    </div>
+
+    <div id="submit-container">
+        <button type="button" id="submit-note-btn">Submit Note</button>
+    </div>
+
+    <div id="result-container" style="display:none; margin-top:30px; text-align:center;">
+        <p>Your note is ready! Share it with this link:</p>
+
+        <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin:15px 0; flex-wrap:wrap;">
+            <input type="text" id="share-link" readonly
+                style="flex:1; min-width:250px; padding:10px 14px; border-radius:8px; border:1px solid #6414e9; font-family:monospace; font-size:0.95rem;">
+            <button type="button" id="copy-link-btn"
+                style="padding:10px 18px; background:#6414e9; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer;">
+                Copy
+            </button>
+        </div>
+
+        <p style="font-size:0.9rem; color:#555;">
+            Anyone with this link can view the note.
+        </p>
+    </div>
+</section>
+
+
+
+<script>
+    const BASE_URL = "<%= process.env.BASE_URL || 'http://localhost:' + (process.env.PORT || '3000') %>";
+</script>
+
+<script src="/scripts/index.js"></script>

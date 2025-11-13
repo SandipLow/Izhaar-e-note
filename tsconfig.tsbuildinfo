@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/db.ts","./src/lib/redis.ts","./src/lib/websocket.ts","./src/middlewares/fetchUser.ts","./src/models/Player.ts","./src/models/User.ts","./src/models/World.ts","./src/res/strings.ts","./src/routes/user.ts","./src/types/global.d.ts"],"version":"5.8.3"}

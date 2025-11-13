@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="/styles/drag.css">
+
+<div class="container">
+    <div class="beloved_pic"></div>
+    <div class="drag_item">
+        Drag me.
+    </div>
+
+    <% for( let msg in data.notes ) { %>
+        <div class="drag_item">
+            <%= data.notes[msg] %>
+        </div>
+    <% } %>
+
+</div>
+
+<script>
+    document.querySelector(".beloved_pic").style.backgroundImage = `url('data:<%= data.photo.mimetype %>;base64,<%= data.photo.data.toString('base64') %>')`;
+</script>
+
+<script src="/scripts/drag.js"></script>

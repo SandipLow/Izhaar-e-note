@@ -1,0 +1,242 @@
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+header .tagline {
+  font-size: 1.3rem;
+  font-weight: 300;
+}
+
+/* Sections */
+section {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px 30px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 700px;
+}
+
+section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  text-align: center;
+  text-decoration: underline;
+}
+
+/* FAQ Styling */
+.faq {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.faq i {
+  font-size: 1.5rem;
+  margin-right: 15px;
+  color: #ffd700;
+}
+
+.faq p {
+  font-size: 1rem;
+}
+
+/* ======================================== CREATE NOTE SECTION ======================================== */
+#get-started {
+  display: none;                     /* hidden until "Create Note" */
+  background: rgba(255,255,255,.1);
+  padding: 25px 30px;
+  margin: 30px auto;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 700px;
+  text-align: center;
+  transition: all .3s ease-in-out;
+  backdrop-filter: blur(5px);
+}
+
+/* show when JS adds .active (optional) */
+#get-started.active { display: block; }
+
+/* ======================================== LAYOUT ======================================== */
+.note-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* ======================================== TEXT NOTE ITEM ======================================== */
+.note-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,.15);
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: all .2s ease;
+}
+.note-item:active { cursor: grabbing; }
+
+.note-item.dragging {
+  opacity: .5;
+  background: rgba(100,20,233,.2);
+  transform: scale(.98);
+}
+.note-item.over {
+  border: 2px dashed #6414e9;
+  background: rgba(100,20,233,.1);
+}
+
+/* Drag handle */
+.drag-handle {
+  font-size: 1.5rem;
+  color: #6414e9;
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Text input */
+.note-text-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255,255,255,.8);
+  transition: background .2s;
+}
+.note-text-input:focus {
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 0 2px #6414e9;
+}
+
+/* Delete button */
+.delete-note-btn {
+  background: #ff4f70;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.4rem;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .3s;
+}
+.delete-note-btn:hover { background: #e63946; }
+
+/* ======================================== PHOTO CONTAINER (fixed at bottom) ======================================== */
+#photo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,.15);
+  border-radius: 8px;
+  min-height: 44px;               /* avoid collapse when empty */
+}
+#photo-container:empty { display: none; }
+
+#photo-container img {
+  max-height: 120px;
+  max-width: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+
+/* ======================================== BUTTONS ROW ======================================== */
+.buttons-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 10px;
+}
+#add-note-btn,
+#add-photo-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ff6f91;
+  color: #fff;
+  transition: all .3s;
+}
+#add-note-btn:hover,
+#add-photo-btn:hover:not(:disabled) {
+  background: #ff4f70;
+  transform: translateY(-1px);
+}
+#add-photo-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ======================================== SUBMIT BUTTON ======================================== */
+#submit-container { margin-top: 20px; }
+#submit-note-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: #6414e9;
+  color: #fff;
+  transition: all .3s;
+  min-width: 160px;
+}
+#submit-note-btn:hover {
+  background: #450aab;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(69,10,171,.3);
+}
+
+/* ======================================== CREATE NOW BUTTON (outside) ======================================== */
+#create-note-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: #ffd700;
+  color: #6414e9;
+  transition: all .3s;
+}
+#create-note-btn:hover {
+  background: #ffea00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,215,0,.4);
+}
+
+/* ======================================== RESPONSIVE ======================================== */
+@media (max-width: 768px) {
+  #get-started { padding: 20px; width: 95%; }
+  .note-item, #photo-container { padding: 8px; gap: 8px; }
+  .note-text-input { font-size: .95rem; padding: 10px; }
+  .buttons-row { flex-direction: column; align-items: center; }
+  #add-note-btn, #add-photo-btn, #submit-note-btn, #create-note-btn { width: 100%; max-width: 300px; }
+  #photo-container img { max-height: 100px; max-width: 150px; }
+}
+@media (max-width: 480px) {
+  .drag-handle { font-size: 1.3rem; }
+  .delete-note-btn { width: 26px; height: 26px; font-size: 1.2rem; }
+}
