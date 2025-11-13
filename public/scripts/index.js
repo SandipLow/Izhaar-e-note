@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitBtn = document.getElementById("submit-note-btn");
     const photoContainer = document.getElementById("photo-container");
 
+    const BASE_URL = window.location.origin;
+
     let uploadedFile = null; // keep the File object
 
     /* ---------- SHOW SECTION ---------- */
