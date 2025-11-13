@@ -12,7 +12,13 @@
         </div>
     <% } %>
 
+    <a href="/">
+    <div class="create_note_btn">
+            <i class="fa-regular fa-pen-to-square"></i> Create Your's..!
+        </div>
+    </a>
 </div>
+
 
 <script>
     document.querySelector(".beloved_pic").style.backgroundImage = `url('data:<%= data.photo.mimetype %>;base64,<%= data.photo.data.toString('base64') %>')`;
